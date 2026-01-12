@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Cannon | Job App Automator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="automater.css">
+    <script src="utils/apikey.js" async></script>
+    <script src="automater.js" async></script>
+</head>
+
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 md:p-10">
+
+    <div class="max-w-4xl mx-auto bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-6">
+        <h1 class="text-3xl font-bold mb-2 text-blue-400">Career Cannon 🚀</h1>
+        <p class="text-gray-400 mb-8 border-b border-gray-700 pb-4">Generate tailored CVs, Cover Letters, and DMs in
+            seconds.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Recruiter Name</label>
+                    <input type="text" id="recruiterName" placeholder="e.g. Thomas"
+                           class="w-full bg-gray-700 border border-gray-600 rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium">What do you need?</label>
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input type="checkbox" id="checkCV" class="w-4 h-4 text-blue-600">
+                        <span>Tailored CV (ATS)</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input type="checkbox" id="checkCL" checked class="w-4 h-4 text-blue-600">
+                        <span>Cover Letter</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input type="checkbox" id="checkDM" class="w-4 h-4 text-blue-600">
+                        <span>LinkedIn/Xing DMs</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input type="checkbox" id="checkKeywords" class="w-4 h-4 text-blue-600">
+                        <span>Extract Keywords</span>
+                    </label>
+                </div>
+
+                <button id="btnGenerate"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200">
+                    GENERATE ASSETS
+                </button>
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-2">Paste Job Description (JD)</label>
+                <textarea id="jdInput" placeholder="Paste the full job description here..."
+                          class="w-full h-80 bg-gray-700 border border-gray-600 rounded p-4 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"></textarea>
+            </div>
+        </div>
+
+        <div id="outputContainer" class="hidden mt-10 space-y-6 border-t border-gray-700 pt-10">
+            <h2 class="text-2xl font-bold">Results</h2>
+            <div id="resultsContent" class="grid grid-cols-1 gap-6"></div>
+        </div>
+    </div>
+
+    <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+        <p class="ml-4 text-xl font-semibold">Gemini is thinking...</p>
+    </div>
+
+</body>
+
+</html>
