@@ -1,0 +1,5 @@
+# Ignore utils folder
+utils/
+
+# Ignore local resume text file
+*.txt
