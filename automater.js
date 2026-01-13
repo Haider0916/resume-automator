@@ -56,8 +56,66 @@ async function generateAll() {
     resultsContent.innerHTML = '';
 
     const tasks = [];
-    if (document.getElementById('checkCV').checked) tasks.push({ type: 'CV', prompt: `Using this Master CV: ${MASTER_CV}, rewrite the Experience section to include keywords from this JD: ${jd}. Use Google XYZ formula. Return ONLY the new Experience section text.` });
-    if (document.getElementById('checkCL').checked) tasks.push({ type: 'Cover Letter', prompt: `Write a 250-word cover letter for this JD: ${jd}. Use my background: ${MASTER_CV}. Address to ${rName}. No markdown in text please, no cover letter heading either` });
+    // if (document.getElementById('checkCV').checked) tasks.push({ type: 'CV', prompt: `Using this Master CV: ${MASTER_CV}, rewrite the Experience section to include keywords from this JD: ${jd}. Use Google XYZ formula. Return ONLY the new Experience section text.` });
+    if (document.getElementById('checkCV').checked) tasks.push({
+        type: 'CV', prompt: `
+        The Resume Optimizer (The "Lebenslauf" Engine)
+Goal: A keyword-perfect, factual resume that passes ATS and impresses German/Western recruiters.
+
+Using this Master CV: ${MASTER_CV}
+
+Rewrite the Experience section to include keywords from this JD: ${jd}
+
+Prompt: "You are an expert Technical Recruiter specializing in the DACH region and Western tech markets. I will provide a Job Description (JD) and my Resume.
+
+Your Task: Rewrite the 'Experience' and 'Skills' sections of my resume to align perfectly with the JD.
+
+Strict Constraints:
+
+No Fluff: Do not use words like 'passionate,' 'results-driven,' 'expert,' or 'visionary.'
+
+Fact-Only: Use the 'Action Verb + Task + Quantifiable Result' formula (e.g., 'Optimized SQL queries, reducing API latency by 30%').
+
+Keyword Mirroring: Identify the top 5 technical requirements in the JD. Ensure these keywords appear in my experience bullets, but only where my resume provides evidence for them.
+
+Tone: Academic, professional, and direct.
+
+Output: Provide the output in Markdown, optimized for a clean, two-page layout. Focus on high information density."
+` });
+    // if (document.getElementById('checkCL').checked) tasks.push({ type: 'Cover Letter', prompt: `Write a 250-word cover letter for this JD: ${jd}. Use my background: ${MASTER_CV}. Address to ${rName}. No markdown in text please, no cover letter heading either` });
+    if (document.getElementById('checkCL').checked) tasks.push({
+        type: 'Cover Letter', prompt: `
+        The Cover Letter (The "Anschreiben" Engine)
+Goal: A one-page letter that looks like it was written by a high-level professional, not a bot.
+
+The cover letter is for this JD: ${jd}.
+
+Use my background: ${MASTER_CV}. 
+
+Address to ${rName}. 
+
+No markdown in text please, no cover letter heading either
+
+Prompt: "Write a formal German-style 'Anschreiben' (Cover Letter) that also works for the broader Western market.
+
+Structure:
+
+The Hook: Start by stating the specific role and why my background in [insert your core tech, e.g., Backend Dev] specifically solves the primary problem mentioned in the JD.
+
+The 'Proof' Bridge: Pick the 2 most difficult requirements from the JD. Find the 2 most relevant achievements in my resume. Connect them directly. Use the phrase 'My experience with [X] allows me to contribute to [Company Name] by [Y].'
+
+The Cultural Fit: Mention a focus on 'efficiency,' 'documentation,' and 'scalability'—values highly prized in Germany and the West.
+
+The Logistics: Include my earliest possible start date and a professional closing ('Mit freundlichen Grüßen' for German roles, 'Sincerely' for others).
+
+Strict Constraints:
+
+NO 'I am thrilled to apply.'
+
+NO 'I am the perfect candidate.'
+
+Maximum 250 words. Be brutally concise."
+        ` });
     if (document.getElementById('checkDM').checked) tasks.push({ type: 'DMs', prompt: `Write a short LinkedIn DM and a formal Xing DM for ${rName} regarding this JD: ${jd}.` });
     if (document.getElementById('checkKeywords').checked) tasks.push({ type: 'Keywords', prompt: `List the top 15 technical keywords from this JD: ${jd}.` });
 
@@ -94,6 +152,12 @@ async function callGemini(prompt) {
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
 
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Gemini API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
         const data = await response.json();
 
         if (!data) throw new Error('Empty response from Gemini API');
@@ -109,8 +173,7 @@ async function callGemini(prompt) {
 
 
     } catch (error) {
-
-        console.log({ error })
+        console.log(error)
     }
 }
 
