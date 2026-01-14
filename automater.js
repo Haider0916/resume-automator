@@ -41,6 +41,12 @@ SKILLS
 ● Specializations: LLM Fine-Tuning, Prompt Engineering, RESTful API Development, Web developement
 LANGUAGES
 English | Urdu`;
+const namee = "Syed Abidi";
+const email = "syedhaider0916@gmail.com";
+const phone = "+923002437195";
+const github = "https://www.github.com/syedhaider0916/";
+const linkedin = "https://www.linkedin.com/in/syed-abidi-426178175/";
+
 
 async function generateAll() {
     const jd = document.getElementById('jdInput').value;
@@ -94,6 +100,13 @@ Use my background: ${MASTER_CV}.
 
 Address to ${rName}. 
 
+My info: 
+Name: ${namee}
+Email: ${email}
+Phone: ${phone}
+GitHub: ${github}
+LinkedIn: ${linkedin}
+
 No markdown in text please, no cover letter heading either
 
 Prompt: "Write a formal German-style 'Anschreiben' (Cover Letter) that also works for the broader Western market.
@@ -116,8 +129,56 @@ NO 'I am the perfect candidate.'
 
 Maximum 250 words. Be brutally concise."
         ` });
-    if (document.getElementById('checkDM').checked) tasks.push({ type: 'DMs', prompt: `Write a short LinkedIn DM and a formal Xing DM for ${rName} regarding this JD: ${jd}.` });
-    if (document.getElementById('checkKeywords').checked) tasks.push({ type: 'Keywords', prompt: `List the top 15 technical keywords from this JD: ${jd}.` });
+    // if (document.getElementById('checkDM').checked) tasks.push({ type: 'DMs', prompt: `Write a short LinkedIn DM and a formal Xing DM for ${rName} regarding this JD: ${jd}.` });
+    if (document.getElementById('checkDM').checked) tasks.push({
+        type: 'DMs',
+        prompt: `
+The Outreach Engine (LinkedIn/Xing)
+Goal: A high-conversion, direct message that gets a response from a busy recruiter.
+
+Job Description: ${jd}
+My Background: ${MASTER_CV}
+Recruiter Name: ${rName}
+My Name: ${namee}
+
+Prompt: "Draft ONE concise outreach message for ${rName} regarding the position in the JD.
+
+Structure:
+1. Direct Opening: State the role and how my specific technical stack (from my CV) solves a key requirement in the JD.
+2. The Evidence: Mention one specific quantifiable achievement from my background that proves I can do the job.
+3. Call to Action: Ask if they are the person handling this role or if they can point you toward the hiring manager.
+
+Strict Constraints:
+- NO Markdown. No bolding, no italics.
+- NO 'I hope this finds you well' or 'I am writing to express interest.'
+- NO AI clichés like 'passionate,' 'synergy,' or 'top-tier.'
+- Keep it under 450 characters.
+- Sign off with 'Best regards, ${namee}'."
+`
+    });
+    // if (document.getElementById('checkKeywords').checked) tasks.push({ type: 'Keywords', prompt: `List the top 15 technical keywords from this JD: ${jd}.` });
+    if (document.getElementById('checkKeywords').checked) tasks.push({
+        type: 'Keywords',
+        prompt: `
+The Technical Keyword Extractor (ATS Optimizer)
+Goal: Extract the 15 most critical technical hard skills for automated screening.
+
+Job Description: ${jd}
+
+Prompt: "Analyze the provided JD and identify the top 15 technical keywords. 
+
+Strict Guidelines:
+1. Focus only on Hard Skills: Languages, frameworks, tools, databases, and specific methodologies (e.g., Kubernetes, CI/CD, Java, AWS).
+2. Exclude Soft Skills: Do not include words like 'communication,' 'teamwork,' or 'problem-solving.'
+3. Format: Return ONLY a comma-separated list. 
+
+Strict Constraints:
+- NO Markdown.
+- NO introductory or concluding text. 
+- NO numbering.
+- Output should look like: React, Node.js, AWS, etc."
+`
+    });
 
     try {
         let anySuccess = false;
