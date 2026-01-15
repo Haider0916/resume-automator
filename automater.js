@@ -47,6 +47,49 @@ const phone = "+923002437195";
 const github = "https://www.github.com/syedhaider0916/";
 const linkedin = "https://www.linkedin.com/in/syed-abidi-426178175/";
 
+const systemInstruction = {
+    parts: [{
+        text: `You are an elite Technical Career Consultant specializing in the DACH and Western tech markets. Your objective is to generate high-density, professionally urgent job application materials that minimize relocation friction and maximize technical credibility.
+
+CORE OPERATING DIRECTIVES:
+1. ZERO FILLER: Start every response immediately with the requested content. Never include introductory phrases (e.g., "Here is the cover letter," "Sure, I can help with that") or concluding remarks (e.g., "Let me know if you need anything else," "Good luck").
+2. NO CHAT/ACKNOWLEDGMENT: Do not acknowledge the user's instructions. Do not provide meta-commentary on the JD or the CV.
+3. ADJECTIVE BAN: Strictly forbid the following words: "passionate," "results-driven," "motivated," "enthusiastic," "expert," "visionary," "seasoned," "proven track record," or "synergy." Replace "excitement" with "technical readiness."
+
+THE GERMAN "CHANCENKARTE"
+- For German opportunities, explicitly state the candidate is "eligible for the Opportunity Card (Chancenkarte)," highlighting a streamlined, self-sponsored visa process. FYI: Only only mention about the CHANCENKARTE if you are certain that the opportunity is for Germany.
+
+REMOTE PROTOCOL:
+- REMOTE FALLBACK: In all Cover Letters and DMs, insert this specific contingency: "To ensure project continuity and an immediate start, I am prepared to begin working on a remote basis while relocation and administrative processing are finalized."
+
+DOCUMENT-SPECIFIC LOGIC:
+- RESUMES: Use the "Action Verb + Task + Quantifiable Result" formula. Prioritize numbers (%, $, time, user counts) from the Master CV. (e.g., 'Optimized SQL queries, reducing API latency by 30%').
+- DMs: Always include the candidate's Name, Phone, and LinkedIn. Identify and map exactly 2-3 core technical overlaps between the Master CV and the JD requirements to show immediate value.
+- TONE: Academic, professional, and direct. Maintain an "Urgent Professional" tone. The writing must reflect a candidate who is highly qualified, ready to start yesterday, and capable of solving the company's specific technical pain points without being a "visa headache."
+
+DATA INTEGRITY:
+- Use the candidate's provided contact details (Name, Email, Phone, GitHub, LinkedIn) in all formal documents. 
+- If a recruiter name is provided, use it. If not, use "Hiring Manager."
+
+FORMATTING:
+- For CVs and cover letters specifically aim for a clean, single page layout with no markdown. Focus on high information density.
+- Do not use Markdown (bolding, italics, headers) for DMs, Keywords, or Cover Letters. Only use Markdown for Resumes if specifically requested. Do not use long dashes (—) or en-dashes (–); use standard hyphens (-) only.
+
+
+The 'Proof' Bridge: Pick the core requirements from the JD which overlap with my achievements in my resume and properly highlight them.
+DO not oversell me as a candidate; be direct and factual.
+For ATS friendly CV and proper cover letter, refer to the JD which will be provided along with my MASTER CV below to extract relevant experience and skills.
+
+Use these personal details:
+Name: ${namee}
+Email: ${email}
+Phone: ${phone}
+GitHub: ${github}
+LinkedIn: ${linkedin}
+Candidate CV: ${MASTER_CV}
+`
+    }]
+};
 
 async function generateAll() {
     const jd = document.getElementById('jdInput').value;
@@ -62,13 +105,13 @@ async function generateAll() {
     resultsContent.innerHTML = '';
 
     const tasks = [];
-    // if (document.getElementById('checkCV').checked) tasks.push({ type: 'CV', prompt: `Using this Master CV: ${MASTER_CV}, rewrite the Experience section to include keywords from this JD: ${jd}. Use Google XYZ formula. Return ONLY the new Experience section text.` });
     if (document.getElementById('checkCV').checked) tasks.push({
-        type: 'CV', prompt: `
+        type: 'CV',
+        prompt: `
         The Resume Optimizer (The "Lebenslauf" Engine)
-Goal: A keyword-perfect, factual resume that passes ATS and impresses German/Western recruiters.
+Goal: A single-page, keyword-perfect, factual CV that 100% passes ATS and impresses German/Western recruiters.
 
-Using this Master CV: ${MASTER_CV}
+Use my master CV.
 
 Rewrite the Experience section to include keywords from this JD: ${jd}
 
@@ -78,36 +121,23 @@ Your Task: Rewrite the 'Experience' and 'Skills' sections of my resume to align 
 
 Strict Constraints:
 
-No Fluff: Do not use words like 'passionate,' 'results-driven,' 'expert,' or 'visionary.'
-
-Fact-Only: Use the 'Action Verb + Task + Quantifiable Result' formula (e.g., 'Optimized SQL queries, reducing API latency by 30%').
-
-Keyword Mirroring: Identify the top 5 technical requirements in the JD. Ensure these keywords appear in my experience bullets, but only where my resume provides evidence for them.
+Keyword Mirroring: Identify the top technical requirements in the JD. Ensure these keywords appear in my experience bullets, but only where my resume provides evidence for them.
 
 Tone: Academic, professional, and direct.
 
-Output: Provide the output in Markdown, optimized for a clean, two-page layout. Focus on high information density."
+Output: Provide the output using no Markdown, optimized for a clean, single-page layout. Focus on high information density."
 ` });
-    // if (document.getElementById('checkCL').checked) tasks.push({ type: 'Cover Letter', prompt: `Write a 250-word cover letter for this JD: ${jd}. Use my background: ${MASTER_CV}. Address to ${rName}. No markdown in text please, no cover letter heading either` });
     if (document.getElementById('checkCL').checked) tasks.push({
-        type: 'Cover Letter', prompt: `
+        type: 'Cover Letter',
+        prompt: `
         The Cover Letter (The "Anschreiben" Engine)
 Goal: A one-page letter that looks like it was written by a high-level professional, not a bot.
 
 The cover letter is for this JD: ${jd}.
 
-Use my background: ${MASTER_CV}. 
+Incoporate my personal details.
 
-Address to ${rName}. 
-
-My info: 
-Name: ${namee}
-Email: ${email}
-Phone: ${phone}
-GitHub: ${github}
-LinkedIn: ${linkedin}
-
-No markdown in text please, no cover letter heading either
+No markdown in text please, no "cover letter" heading should be present.
 
 Prompt: "Write a formal German-style 'Anschreiben' (Cover Letter) that also works for the broader Western market.
 
@@ -119,7 +149,7 @@ The 'Proof' Bridge: Pick the 2 most difficult requirements from the JD. Find the
 
 The Cultural Fit: Mention a focus on 'efficiency,' 'documentation,' and 'scalability'—values highly prized in Germany and the West.
 
-The Logistics: Include my earliest possible start date and a professional closing ('Mit freundlichen Grüßen' for German roles, 'Sincerely' for others).
+The Logistics: Include my earliest possible start date(which should be the next immediate working day) and a professional closing ('Mit freundlichen Grüßen' for German roles, 'Sincerely' for others).
 
 Strict Constraints:
 
@@ -128,8 +158,8 @@ NO 'I am thrilled to apply.'
 NO 'I am the perfect candidate.'
 
 Maximum 250 words. Be brutally concise."
-        ` });
-    // if (document.getElementById('checkDM').checked) tasks.push({ type: 'DMs', prompt: `Write a short LinkedIn DM and a formal Xing DM for ${rName} regarding this JD: ${jd}.` });
+        `
+    });
     if (document.getElementById('checkDM').checked) tasks.push({
         type: 'DMs',
         prompt: `
@@ -149,14 +179,12 @@ Structure:
 3. Call to Action: Ask if they are the person handling this role or if they can point you toward the hiring manager.
 
 Strict Constraints:
-- NO Markdown. No bolding, no italics.
 - NO 'I hope this finds you well' or 'I am writing to express interest.'
 - NO AI clichés like 'passionate,' 'synergy,' or 'top-tier.'
 - Keep it under 450 characters.
 - Sign off with 'Best regards, ${namee}'."
 `
     });
-    // if (document.getElementById('checkKeywords').checked) tasks.push({ type: 'Keywords', prompt: `List the top 15 technical keywords from this JD: ${jd}.` });
     if (document.getElementById('checkKeywords').checked) tasks.push({
         type: 'Keywords',
         prompt: `
@@ -210,7 +238,10 @@ async function callGemini(prompt) {
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            body: JSON.stringify({
+                system_instruction: systemInstruction,
+                contents: [{ parts: [{ text: prompt }] }]
+            })
         });
 
 
