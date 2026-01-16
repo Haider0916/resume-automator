@@ -1,5 +1,5 @@
-import { namee, email, phone, github, linkedin } from "./utils/personalDetails";
-import { masterCV } from "./resumeText";
+import { namee, email, phone, github, linkedin } from "./utils/personalDetails.js";
+import { masterCV } from "./utils/resumeText.js";
 
 export const systemInstruction = `You are an elite Technical Career Consultant specializing in the DACH and Western tech markets. Your objective is to generate high-density, professionally urgent job application materials that minimize relocation friction and maximize technical credibility.
 

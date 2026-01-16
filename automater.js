@@ -1,12 +1,12 @@
-import { systemInstruction } from "./systemMessage";
-import { GeminiApiKey } from "./utils/apiKey";
-import { getCoverLetterPrompt, getCVprompt, getDMPrompt } from "./prompts";
+import { systemInstruction as SI } from "./systemMessage.js";
+import { GeminiApiKey } from "./utils/apiKey.js";
+import { getCoverLetterPrompt, getCVprompt, getDMPrompt } from "./prompts.js";
 
 const API_KEY = GeminiApiKey || 'YOUR_GEMINI_API_KEY_HERE';
 
 const systemInstruction = {
     parts: [{
-        text: systemInstruction
+        text: SI
     }]
 };
 

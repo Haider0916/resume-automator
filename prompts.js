@@ -1,5 +1,5 @@
-import { namee, email, phone, github, linkedin } from "./utils/personalDetails";
-import { masterCV } from "./resumeText";
+import { namee, email, phone, github, linkedin } from "./utils/personalDetails.js";
+import { masterCV } from "./utils/resumeText.js";
 
 export const getCVprompt = (jd) => {
     return `
