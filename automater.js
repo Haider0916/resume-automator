@@ -1,6 +1,6 @@
 import { systemInstruction as SI } from "./systemMessage.js";
 import { GeminiApiKey } from "./utils/apiKey.js";
-import { getCoverLetterPrompt, getCVprompt, getDMPrompt } from "./prompts.js";
+import { getCoverLetterPrompt, getCVprompt, getDMPrompt, getKeywordsPrompt } from "./prompts.js";
 
 const API_KEY = GeminiApiKey || 'YOUR_GEMINI_API_KEY_HERE';
 
@@ -45,21 +45,18 @@ async function generateAll() {
     });
 
     try {
-        let anySuccess = false;
         for (const task of tasks) {
             try {
                 const response = await callGemini(task.prompt);
                 displayResult(task.type, response);
-                anySuccess = true;
+                outputContainer.classList.remove('hidden');
             } catch (taskError) {
-                console.error('Task failed:', task.type, taskError);
+                console.log({ taskType: task.type, taskError });
                 displayResult(task.type, `Error: ${taskError.message || taskError}`);
             }
         }
-        if (anySuccess) outputContainer.classList.remove('hidden');
     } catch (error) {
-        console.error(error);
-        alert("Unexpected error. Check console.");
+        console.log({ error });
     } finally {
         loading.classList.add('hidden');
     }
@@ -160,7 +157,7 @@ function downloadAsPDF(title, content) {
     }
 }
 
-(function init() {
+function init() {
     function setup() {
         const btn = document.getElementById('btnGenerate');
         if (btn) btn.addEventListener('click', generateAll);
@@ -173,4 +170,6 @@ function downloadAsPDF(title, content) {
             setup();
         }
     }
-})();
+};
+
+init(); 

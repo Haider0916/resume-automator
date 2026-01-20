@@ -90,6 +90,7 @@ Strict Constraints:
 - NO AI clichés like 'passionate,' 'synergy,' or 'top-tier.'
 - Keep it under 450 characters.
 - Sign off with 'Best regards, ${namee}'."
+- Make it the adequate size do not make it too short or way too small make it the perfect size Big or small doesn't matter the adequate size matters
 `
 }
 
