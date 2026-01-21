@@ -62,7 +62,7 @@ Maximum 250 words. Be brutally concise."
 `
 }
 
-export const getDMPrompt = (jd, rName) => {
+export const getDMPrompt = (jd, rName, dmType = "general") => {
     return `
     The Outreach Engine (LinkedIn/Xing)
 Goal: A high-conversion, direct message that gets a response from a busy recruiter.
@@ -91,6 +91,10 @@ Strict Constraints:
 - Keep it under 450 characters.
 - Sign off with 'Best regards, ${namee}'."
 - Make it the adequate size do not make it too short or way too small make it the perfect size Big or small doesn't matter the adequate size matters
+
+${dmType === 'connect_req_msg' && `You have a maximum of 200 characters to write a connect request message. Be very concise and straight to the point. Incoporate all the necessary details in this small limit. `}
+${dmType === 'company_page_msg' && `You have a limit of 25-750 words to write a message for a company career page. Make sure to highlight all the necessary details within this word limit. Keep the size what you think is adequate keeping within this range.`}
+
 `
 }
 

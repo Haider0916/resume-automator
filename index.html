@@ -40,6 +40,26 @@
                         <input type="checkbox" id="checkDM" class="w-4 h-4 text-blue-600">
                         <span>LinkedIn/Xing DMs</span>
                     </label>
+
+                    <!-- DM Message Type Options (hidden by default) -->
+                    <div id="dmOptionsContainer" class="hidden ml-8 space-y-2 border-l border-gray-600 pl-4">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" id="dmType1" name="dmType" value="connect_req_msg"
+                                   class="w-4 h-4 text-blue-600">
+                            <span class="text-sm">Connect Note (Max 200 char)</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" id="dmType2" name="dmType" value="company_page"
+                                   class="w-4 h-4 text-blue-600">
+                            <span class="text-sm">Company Career Page (25-750 words)</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" id="dmType3" name="dmType" value="general_msg" checked
+                                   class="w-4 h-4 text-blue-600">
+                            <span class="text-sm">General Message (No limit)</span>
+                        </label>
+                    </div>
+
                     <label class="flex items-center space-x-3 cursor-pointer">
                         <input type="checkbox" id="checkKeywords" class="w-4 h-4 text-blue-600">
                         <span>Extract Keywords</span>

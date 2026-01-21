@@ -34,10 +34,13 @@ async function generateAll() {
         prompt: getCoverLetterPrompt(jd)
     });
 
-    if (document.getElementById('checkDM').checked) tasks.push({
-        type: 'DMs',
-        prompt: getDMPrompt(jd, rName)
-    });
+    if (document.getElementById('checkDM').checked) {
+        const dmType = document.querySelector('input[name="dmType"]:checked')?.value || 'general';
+        tasks.push({
+            type: 'DMs',
+            prompt: getDMPrompt(jd, rName, dmType)
+        });
+    }
 
     if (document.getElementById('checkKeywords').checked) tasks.push({
         type: 'Keywords',
@@ -161,6 +164,20 @@ function init() {
     function setup() {
         const btn = document.getElementById('btnGenerate');
         if (btn) btn.addEventListener('click', generateAll);
+
+        // Toggle DM message type options visibility
+        const dmCheckbox = document.getElementById('checkDM');
+        const dmOptionsContainer = document.getElementById('dmOptionsContainer');
+
+        if (dmCheckbox && dmOptionsContainer) {
+            dmCheckbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    dmOptionsContainer.classList.remove('hidden');
+                } else {
+                    dmOptionsContainer.classList.add('hidden');
+                }
+            });
+        }
     }
 
     if (typeof document !== 'undefined') {
