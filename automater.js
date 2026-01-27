@@ -114,16 +114,20 @@ function displayResult(title, text) {
             <h3 class="text-xl font-bold text-blue-300">${title}</h3>
             <button class="bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded">Download PDF</button>
         </div>
-        <pre class="whitespace-pre-wrap text-sm text-gray-200 font-sans">${text}</pre>
+        <div contenteditable="true">
+            <pre class="whitespace-pre-wrap text-sm text-gray-200 font-sans">${text}</pre>
+        </div>
     `;
 
     const button = div.querySelector('button');
-    button.addEventListener('click', () => downloadAsPDF(title, text));
+    const preTag = div.querySelector('div[contenteditable="true"] pre');
+    button.addEventListener('click', () => downloadAsPDF(title, preTag));
 
     resultsContent.appendChild(div);
 }
 
-function downloadAsPDF(title, content) {
+function downloadAsPDF(title, preTag) {
+    const content = preTag.innerText;
     // Prefer jsPDF if available to make a real PDF; otherwise fallback to text download
     if (window.jspdf && window.jspdf.jsPDF) {
         const doc = new window.jspdf.jsPDF();
