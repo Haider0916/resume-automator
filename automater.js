@@ -1,6 +1,6 @@
 import { systemInstruction as SI } from "./systemMessage.js";
 import { GeminiApiKey } from "./utils/apiKey.js";
-import { getCoverLetterPrompt, getCVprompt, getDMPrompt, getKeywordsPrompt } from "./prompts.js";
+import { getCoverLetterPrompt, getCVprompt, getDMPrompt, getKeywordsPrompt, getBatchedQuestionsAnswerPrompt } from "./prompts.js";
 
 const API_KEY = GeminiApiKey || 'YOUR_GEMINI_API_KEY_HERE';
 
@@ -46,6 +46,23 @@ async function generateAll() {
         type: 'Keywords',
         prompt: getKeywordsPrompt(jd)
     });
+
+    if (document.getElementById('checkQuestions').checked) {
+        const qInputs = document.querySelectorAll('#questionsList input[type="text"]');
+        const questions = [];
+        qInputs.forEach(input => {
+            if (input.value.trim()) {
+                questions.push(input.value.trim());
+            }
+        });
+
+        if (questions.length > 0) {
+            tasks.push({
+                type: 'Screening Questions',
+                prompt: getBatchedQuestionsAnswerPrompt(jd, questions)
+            });
+        }
+    }
 
     try {
         for (const task of tasks) {
@@ -106,24 +123,58 @@ async function callGemini(prompt) {
 }
 
 function displayResult(title, text) {
-    const resultsContent = document.getElementById('resultsContent');
-    const div = document.createElement('div');
-    div.className = "bg-gray-700 p-4 rounded border border-gray-600";
-    div.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-blue-300">${title}</h3>
-            <button class="bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded">Download PDF</button>
-        </div>
-        <div contenteditable="true">
-            <pre class="whitespace-pre-wrap text-sm text-gray-200 font-sans">${text}</pre>
-        </div>
-    `;
+    if (title === 'Screening Questions') {
+        const resultsContent = document.getElementById('resultsContent');
+        const mainContainer = document.createElement('div');
+        mainContainer.className = "bg-gray-700 p-4 rounded border border-gray-600";
+        mainContainer.innerHTML = `
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-300">${title}</h3>
+            </div>
+            <div class="space-y-6"></div>
+        `;
 
-    const button = div.querySelector('button');
-    const preTag = div.querySelector('div[contenteditable="true"] pre');
-    button.addEventListener('click', () => downloadAsPDF(title, preTag));
+        const answersContainer = mainContainer.querySelector('.space-y-6');
 
-    resultsContent.appendChild(div);
+        try {
+            const qaPairs = JSON.parse(text);
+            qaPairs.forEach(pair => {
+                const qaDiv = document.createElement('div');
+                qaDiv.className = "border-t border-gray-600 pt-4";
+                qaDiv.innerHTML = `
+                    <p class="font-semibold text-gray-300 mb-2">${pair.question}</p>
+                    <div>
+                        <pre class="whitespace-pre-wrap text-sm text-gray-200 font-sans">${pair.answer}</pre>
+                    </div>
+                `;
+                answersContainer.appendChild(qaDiv);
+            });
+        } catch (e) {
+            console.error("Failed to parse screening questions JSON:", e);
+            answersContainer.innerHTML = `<pre class="whitespace-pre-wrap text-sm text-red-400 font-sans">Error: Could not parse the response from the AI. Raw response:\n\n${text}</pre>`;
+        }
+
+        resultsContent.appendChild(mainContainer);
+    } else {
+        const resultsContent = document.getElementById('resultsContent');
+        const div = document.createElement('div');
+        div.className = "bg-gray-700 p-4 rounded border border-gray-600";
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-blue-300">${title}</h3>
+                <button class="bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded">Download PDF</button>
+            </div>
+            <div contenteditable="true">
+                <pre class="whitespace-pre-wrap text-sm text-gray-200 font-sans">${text}</pre>
+            </div>
+        `;
+
+        const button = div.querySelector('button');
+        const preTag = div.querySelector('div[contenteditable="true"] pre');
+        button.addEventListener('click', () => downloadAsPDF(title, preTag));
+
+        resultsContent.appendChild(div);
+    }
 }
 
 function downloadAsPDF(title, preTag) {
@@ -180,6 +231,34 @@ function init() {
                 } else {
                     dmOptionsContainer.classList.add('hidden');
                 }
+            });
+        }
+
+        // Questions Logic
+        const checkQuestions = document.getElementById('checkQuestions');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const btnAddQuestion = document.getElementById('btnAddQuestion');
+        const questionsList = document.getElementById('questionsList');
+
+        if (checkQuestions && questionsContainer) {
+            checkQuestions.addEventListener('change', (e) => {
+                e.target.checked ? questionsContainer.classList.remove('hidden') : questionsContainer.classList.add('hidden');
+            });
+        }
+
+        if (btnAddQuestion && questionsList) {
+            btnAddQuestion.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.className = "flex items-center space-x-2 animate-fade-in";
+                div.innerHTML = `
+                    <input type="text" placeholder="Paste question..." class="w-full bg-gray-700 border border-gray-600 rounded p-2 text-xs focus:ring-1 focus:ring-blue-500 outline-none">
+                `;
+                const btnRemove = document.createElement('button');
+                btnRemove.className = "text-red-400 hover:text-red-300 font-bold px-1";
+                btnRemove.innerHTML = "&times;";
+                btnRemove.onclick = () => div.remove();
+                div.appendChild(btnRemove);
+                questionsList.appendChild(div);
             });
         }
     }

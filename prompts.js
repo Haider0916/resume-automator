@@ -121,3 +121,33 @@ Strict Constraints:
 `
 
 }
+
+export const getBatchedQuestionsAnswerPrompt = (jd, questions) => {
+    const formattedQuestions = questions.map((q, i) => `${i + 1}. ${q}`).join('\n');
+
+    return `
+The Application Question Engine (Batch Mode)
+Goal: Answer a list of screening questions based strictly on my Master CV and the Job Description.
+
+Job Description: ${jd}
+My Background: ${masterCV}
+
+Questions to Answer:
+${formattedQuestions}
+
+STRICT INSTRUCTIONS:
+1. Respond with ONLY a valid JSON array of objects. Do not include any other text, explanations, or markdown.
+2. The JSON array should contain one object for each question answered.
+3. Each object in the array must have two keys: "question" (the original question string) and "answer" (the generated answer string).
+   Example format: [{"question": "Why us?", "answer": "Your company's focus on..."}, {"question": "A challenge?", "answer": "A significant challenge was..."}]
+
+ANSWER CONSTRAINTS (for each "answer" value):
+1. NO "AI Smell": Do not use words like "tapestry", "delve", "testament", "showcase", "foster", or "landscape".
+2. NO Long Dashes: Do not use em-dashes (—) or en-dashes (–). Use standard hyphens (-) only.
+3. Source of Truth: Answers must be factually derived from my CV. Do not invent experience.
+4. Relevance: Relate my experience directly to the JD requirements mentioned in the context of the question.
+5. Tone: Direct, professional, human, and concise.
+
+Generate the JSON response now.
+`;
+}
