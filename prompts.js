@@ -6,23 +6,55 @@ export const getCVprompt = (jd) => {
 The Resume Optimizer(The "Lebenslauf" Engine)
 Goal: A single - page, keyword - perfect, factual CV that 100 % passes ATS and impresses German / Western recruiters.
 
-Use my master CV.
+The content to fill can be inferred from my master CV:
+${masterCV}
 
-Rewrite the Experience section to include keywords from this JD: ${jd}
+- Return ONLY valid JSON.
+- Do NOT include explanations, markdown, or extra text.
+- Keep bullet counts EXACTLY as provided
+- Rewrite bullets to align with the JD
+- Do NOT invent experience
+- Do not oversell or undersell my experience and achievements.
+- Use resume-specific concise, professional language with an academic, professional, and direct tone.
 
-Prompt: "You are an expert Technical Recruiter specializing in the DACH region and Western tech markets. I will provide a Job Description (JD) and my Resume.
+EXTREMELY IMPORTANT CONSTRAINST:
+Keyword Mirroring -> Identify the top technical requirements in the JD. Ensure these keywords appear in my experience bullets, but only where my resume provides evidence for them. Extract keywords from the JD provided and fill in the corresponding details in the resultant CV.
 
-Your Task: Rewrite the 'Experience' and 'Skills' sections of my resume to align perfectly with the JD.
+JSON KEYS (DO NOT CHANGE):
+{
+  "SUMMARY": "",
 
-Strict Constraints:
+  "TURING_BULLET_1": "",
+  "TURING_BULLET_2": "",
+  "TURING_BULLET_3": "",
+  "TURING_BULLET_4": "",
 
-Keyword Mirroring: Identify the top technical requirements in the JD.Ensure these keywords appear in my experience bullets, but only where my resume provides evidence for them.
+  "AFINITI_BULLET_1": "",
+  "AFINITI_BULLET_2": "",
+  "AFINITI_BULLET_3": "",
+  "AFINITI_BULLET_4": "",
+  "AFINITI_BULLET_5": "",
 
-Tone: Academic, professional, and direct.
+  "CONTOUR_BULLET_1": "",
+  "CONTOUR_BULLET_2": "",
+  "CONTOUR_BULLET_3": "",
 
-Output: Provide the output using no Markdown, optimized for a clean, single - page layout.Focus on high information density."
-`
+  "TPS_BULLET_1": "",
+  "TPS_BULLET_2": "",
+  "TPS_BULLET_3": "",
+
+  "SKILLS_LANG": "",
+  "SKILLS_TOOLS": "",
+  "SKILLS_SPECIAL": ""
 }
+
+Refer strcitly to this Job Description:
+${jd}
+
+
+Rest keeps things like the company details, dates, education, and languages intact. Only modify the experience bullets and summary to align with the JD while adhering to the constraints above.
+
+`}
 
 export const getCoverLetterPrompt = (jd) => {
     return `

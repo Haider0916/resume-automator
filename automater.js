@@ -68,11 +68,11 @@ async function generateAll() {
         for (const task of tasks) {
             try {
                 const response = await callGemini(task.prompt);
-                displayResult(task.type, response);
+                await displayResult(task.type, response);
                 outputContainer.classList.remove('hidden');
             } catch (taskError) {
                 console.log({ taskType: task.type, taskError });
-                displayResult(task.type, `Error: ${taskError.message || taskError}`);
+                await displayResult(task.type, `Error: ${taskError.message || taskError}`);
             }
         }
     } catch (error) {
@@ -122,8 +122,82 @@ async function callGemini(prompt) {
     }
 }
 
-function displayResult(title, text) {
-    if (title === 'Screening Questions') {
+async function displayResult(title, text) {
+    if (title === 'CV') {
+        const resultsContent = document.getElementById('resultsContent');
+        const mainContainer = document.createElement('div');
+        mainContainer.className = "bg-gray-700 p-4 rounded border border-gray-600";
+        mainContainer.innerHTML = `
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-blue-300">${title}</h3>
+            <button class="download-cv-btn bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1 rounded hidden">Download DOCX</button>
+        </div>
+        <div class="cv-render-container bg-white rounded p-4 min-h-[300px]"></div>
+        <div class="cv-status-text text-gray-400 mt-2">Generating CV preview from template...</div>
+    `;
+        resultsContent.appendChild(mainContainer);
+
+        const cvContainer = mainContainer.querySelector('.cv-render-container');
+        const statusText = mainContainer.querySelector('.cv-status-text');
+        const downloadBtn = mainContainer.querySelector('.download-cv-btn');
+
+        try {
+            let cleanText = text.replace(/^```json\s*/, '').replace(/```$/, '');
+            const cvData = JSON.parse(cleanText);
+
+            const response = await fetch('templates/temp_doc_1.docx');
+            if (!response.ok) {
+                throw new Error('Could not load `templates/temp_doc_1.docx`. Please ensure the file exists.');
+            }
+            const templateArrayBuffer = await response.arrayBuffer();
+
+            const zip = new window.PizZip(templateArrayBuffer);
+            const doc = new window.docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+
+            doc.setData(cvData);
+            doc.render();
+
+            const generatedBlob = doc.getZip().generate({
+                type: "blob",
+                mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            });
+
+            console.log({ generatedBlob, cvContainer })
+
+            // Check if docx-preview is loaded
+            if (window.docx && typeof window.docx.renderAsync === 'function') {
+                await window.docx.renderAsync(generatedBlob, cvContainer);
+            } else {
+                // Fallback: Just show a message that preview isn't available
+                cvContainer.innerHTML = '<p class="text-gray-600">Preview not available. You can download the file instead.</p>';
+                // Show the download button
+                downloadBtn.classList.remove('hidden');
+
+                // Set up download functionality
+                downloadBtn.onclick = () => {
+                    const url = window.URL.createObjectURL(generatedBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'generated_cv.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                };
+            }
+
+            statusText.textContent = 'CV preview generated successfully!';
+            statusText.classList.remove('text-gray-400');
+            statusText.classList.add('text-green-400');
+
+        } catch (error) {
+            console.error('CV Generation Error:', error);
+            statusText.textContent = 'Error generating CV preview.';
+            statusText.classList.remove('text-gray-400');
+            statusText.classList.add('text-red-400');
+        }
+    }
+    else if (title === 'Screening Questions') {
         const resultsContent = document.getElementById('resultsContent');
         const mainContainer = document.createElement('div');
         mainContainer.className = "bg-gray-700 p-4 rounded border border-gray-600";
