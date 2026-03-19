@@ -3,24 +3,39 @@ import { masterCV } from "./utils/resumeText.js";
 
 export const getCVprompt = (jd) => {
     return `
-The Resume Optimizer(The "Lebenslauf" Engine)
-Goal: A single - page, keyword - perfect, factual CV that 100 % passes ATS and impresses German / Western recruiters.
+Act as a Senior Technical Recruiter and Resume Architect. 
+Goal: Generate a single-page, keyword-perfect, factual CV in JSON format that aligns the User's Master CV to a specific Job Description (JD) for Western markets.
 
-The content to fill can be inferred from my master CV:
-${masterCV}
+### SOURCE DATA:
+Master CV: ${masterCV}
+Job Description: ${jd}
 
+### GLOBAL CONSTRAINTS:
+1. Factual Integrity: Do NOT invent experience. Do not oversell or undersell. Use only evidence found in the Master CV.
+2. Tone: Senior-level, strategic, and "Systems-First." Shift language from "Tasks" (what was done) to "Systems" (how it was solved).
+3. German Market Logic: If the JD is identified as a German-based role, explicitly mention eligibility for the "Chancenkarte" (Opportunity Card) within the SUMMARY or a relevant field to highlight work authorization readiness.
+4. Formatting Constraint (Character Counts): To maintain layout integrity, every experience bullet must satisfy one of two conditions: be UNDER 100 characters OR be OVER 120 characters. Avoid the 100–120 range strictly.
+5. Keyword Mirroring: Identify top technical requirements in the JD. Prioritize these keywords in bullets and skill sections ONLY where the Master CV provides supporting evidence.
+
+### SECTION-SPECIFIC INSTRUCTIONS:
+
+[SUMMARY]
+Generate a high-impact, 4-sentence paragraph using this formula:
+- Sentence 1 (Identity): Professional title, years of experience, and primary tech stack from the Master CV.
+- Sentence 2 (Systems Core): Highlight backend internals, scalable architectures, or DevOps integration most relevant to the JD.
+- Sentence 3 (Quantifiable Result): A tangible achievement from the Master CV using a specific metric (%, $, or time).
+- Sentence 4 (Strategic Alignment): Connect a specialized niche (e.g., AI automation, agentic workflows, LLM integration) to a core challenge in the JD.
+
+[SKILLS SECTIONS]
+- Prioritize and filter LANGUAGES_FRAMEWORKS, SPECIALIZATIONS, and TOOLS_PLATFORMS based on JD relevance. 
+- Proficiencies to draw from: JavaScript (TypeScript), React.js (Next.js, Redux), Node.js (Nest.js, Express.js), C#, SQL, Git, Bitbucket, GitHub, ServiceNow, Scrum, TypeORM, LLM Fine-Tuning, Prompt Engineering, RESTful API Development.
+
+### OUTPUT FORMAT:
 - Return ONLY valid JSON.
-- Do NOT include explanations, markdown, or extra text.
-- Keep bullet counts EXACTLY as provided
-- Rewrite bullets to align with the JD
-- Do NOT invent experience
-- Do not oversell or undersell my experience and achievements.
-- Use resume-specific concise, professional language with an academic, professional, and direct tone.
+- No markdown, no explanations, no preamble.
+- Maintain EXACT bullet counts as defined in the keys.
 
-EXTREMELY IMPORTANT CONSTRAINST:
-Keyword Mirroring -> Identify the top technical requirements in the JD. Ensure these keywords appear in my experience bullets, but only where my resume provides evidence for them. Extract keywords from the JD provided and fill in the corresponding details in the resultant CV.
-
-JSON KEYS (DO NOT CHANGE):
+JSON STRUCTURE:
 {
   "SUMMARY": "",
 
@@ -43,18 +58,12 @@ JSON KEYS (DO NOT CHANGE):
   "TPS_BULLET_2": "",
   "TPS_BULLET_3": "",
 
-  "SKILLS_LANG": "",
-  "SKILLS_TOOLS": "",
-  "SKILLS_SPECIAL": ""
+  "TOOLS_PLATFORMS": "",
+  "SPECIALIZATIONS": "",
+  "LANGUAGES_FRAMEWORKS": ""
+`
+
 }
-
-Refer strcitly to this Job Description:
-${jd}
-
-
-Rest keeps things like the company details, dates, education, and languages intact. Only modify the experience bullets and summary to align with the JD while adhering to the constraints above.
-
-`}
 
 export const getCoverLetterPrompt = (jd) => {
     return `
