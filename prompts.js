@@ -14,7 +14,7 @@ Job Description: ${jd}
 1. Factual Integrity: Do NOT invent experience. Do not oversell or undersell. Use only evidence found in the Master CV.
 2. Tone: Senior-level, strategic, and "Systems-First." Shift language from "Tasks" (what was done) to "Systems" (how it was solved).
 3. German Market Logic: If the JD is identified as a German-based role, explicitly mention eligibility for the "Chancenkarte" (Opportunity Card) within the SUMMARY or a relevant field to highlight work authorization readiness.
-4. Formatting Constraint (Character Counts): To maintain layout integrity, every experience bullet must satisfy one of two conditions: be UNDER 100 characters OR be OVER 120 characters. Avoid the 100–120 range strictly.
+4. Formatting Constraint (Character Counts): To maintain layout integrity, every experience bullet must satisfy one of two conditions: be UNDER 140 characters.
 5. Keyword Mirroring: Identify top technical requirements in the JD. Prioritize these keywords in bullets and skill sections ONLY where the Master CV provides supporting evidence.
 
 ### SECTION-SPECIFIC INSTRUCTIONS:

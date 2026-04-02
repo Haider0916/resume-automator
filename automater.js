@@ -221,32 +221,31 @@ async function displayResult(title, text) {
     if (title === 'CV') {
         const resultsContent = document.getElementById('resultsContent');
         const mainContainer = document.createElement('div');
-        mainContainer.className = "bg-gray-700 p-4 rounded border border-gray-600";
         mainContainer.innerHTML = `
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-blue-300">${title}</h3>
-            <button class="download-cv-btn bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1 rounded hidden">Download DOCX</button>
+        <div class="cv-render-container bg-white rounded"></div>
+        <div class="flex justify-end items-center mb-2">
+            <div class="flex gap-2">
+                <button id="btnDownloadPDF" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded hidden">Download PDF</button>
+            </div>
         </div>
-        <div class="cv-render-container bg-white rounded p-4 min-h-[300px]"></div>
+        <div class="cv-render-container bg-white rounded text-black p-4 overflow-auto" style="max-height: 800px;"></div>
         <div class="cv-status-text text-gray-400 mt-2">Generating CV preview from template...</div>
     `;
         resultsContent.appendChild(mainContainer);
 
         const cvContainer = mainContainer.querySelector('.cv-render-container');
         const statusText = mainContainer.querySelector('.cv-status-text');
-        // const downloadBtn = mainContainer.querySelector('.download-cv-btn');
+        const btnDownloadPDF = mainContainer.querySelector('#btnDownloadPDF');
 
         try {
             let cleanText = text.replace(/^```json\s*/, '').replace(/```$/, '');
             const cvData = JSON.parse(cleanText);
-            console.log({ text, cvData })
 
             const normalizedCVdata = normalizeCVdata(cvData);
-            console.log({ normalizedCVdata });
 
-            const response = await fetch('templates/temp_doc_3.docx');
+            const response = await fetch('templates/resume_template.docx');
             if (!response.ok) {
-                throw new Error('Could not load `templates/temp_doc_3.docx`. Please ensure the file exists.');
+                throw new Error('Could not load `templates/resume_template.docx`. Please ensure the file exists.');
             }
             const templateArrayBuffer = await response.arrayBuffer();
 
@@ -261,31 +260,39 @@ async function displayResult(title, text) {
                 mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             });
 
-            // Check if docx-preview is loaded
-            // if (window.docx && typeof window.docx.renderAsync === 'function') {
             await window.docx.renderAsync(generatedBlob, cvContainer);
-            // } else {
-            //     // Fallback: Just show a message that preview isn't available
-            //     cvContainer.innerHTML = '<p class="text-gray-600">Preview not available. You can download the file instead.</p>';
-            //     // Show the download button
-            //     downloadBtn.classList.remove('hidden');
-
-            //     // Set up download functionality
-            //     downloadBtn.onclick = () => {
-            //         const url = window.URL.createObjectURL(generatedBlob);
-            //         const a = document.createElement('a');
-            //         a.href = url;
-            //         a.download = 'generated_cv.docx';
-            //         document.body.appendChild(a);
-            //         a.click();
-            //         document.body.removeChild(a);
-            //         window.URL.revokeObjectURL(url);
-            //     };
-            // }
 
             statusText.textContent = 'CV preview generated successfully!';
             statusText.classList.remove('text-gray-400');
             statusText.classList.add('text-green-400');
+
+            // Enable buttons
+            btnDownloadPDF.classList.remove('hidden');
+
+            btnDownloadPDF.onclick = () => {
+                const element = mainContainer.querySelector('.cv-render-container');
+
+                // Temporarily expand the container to capture the full content
+                const originalMaxHeight = element.style.maxHeight;
+                const originalOverflow = element.style.overflow;
+                element.style.maxHeight = 'none';
+                element.style.overflow = 'visible';
+
+                const opt = {
+                    margin: 0,
+                    filename: `Resume_${new Date().toISOString().split('T')[0]}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, scrollY: 0 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                if (window.html2pdf) {
+                    window.html2pdf().set(opt).from(element).save().finally(() => {
+                        element.style.maxHeight = originalMaxHeight;
+                        element.style.overflow = originalOverflow;
+                    });
+                }
+            };
 
         } catch (error) {
             console.error('CV Generation Error:', error);
@@ -364,8 +371,19 @@ function normalizeCVdata(cvData) {
 }
 
 function downloadAsPDF(title, preTag) {
+    if (window.html2pdf) {
+        const opt = {
+            margin: 10,
+            filename: `${title.replace(/\s+/g, '_')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        window.html2pdf().set(opt).from(preTag).save();
+        return;
+    }
+
     const content = preTag.innerText;
-    // Prefer jsPDF if available to make a real PDF; otherwise fallback to text download
     if (window.jspdf && window.jspdf.jsPDF) {
         const doc = new window.jspdf.jsPDF();
         const margin = 10;
@@ -406,7 +424,6 @@ function init() {
         const btn = document.getElementById('btnGenerate');
         if (btn) btn.addEventListener('click', generateAll);
 
-        // Toggle DM message type options visibility
         const dmCheckbox = document.getElementById('checkDM');
         const dmOptionsContainer = document.getElementById('dmOptionsContainer');
 
